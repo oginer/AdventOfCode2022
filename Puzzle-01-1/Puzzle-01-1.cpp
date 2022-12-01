@@ -10,7 +10,7 @@ int main()
 {
 	string line;
 	ifstream input("input.txt");
-	multiset<int, greater<int>> elf_ranking;
+	multiset<unsigned long, greater<unsigned long>> elf_ranking;
 	unsigned long elf_calories = 0;
 
 	while (getline(input, line))
