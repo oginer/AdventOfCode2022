@@ -9,18 +9,15 @@ using namespace std;
 int main()
 {
 	string line;
-
 	ifstream input("input.txt");
-
 	multiset<int, greater<int>> elf_ranking;
-
 	unsigned long elf_calories = 0;
 
 	while (getline(input, line))
 	{
 		if (line != "")
 		{
-			elf_calories += stoi(line);
+			elf_calories += stoul(line);
 		}
 		else
 		{
