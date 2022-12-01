@@ -29,5 +29,5 @@ int main()
 	auto top_elf = elf_ranking.begin();
 
 	cout << "Max calories: " << *top_elf << endl;
-	cout << "Sum of 3 best: " << accumulate(top_elf, next(top_elf, 3), 0) << endl;
+	cout << "Sum of 3 best: " << accumulate(top_elf, next(top_elf, 3), 0ul) << endl;
 }
