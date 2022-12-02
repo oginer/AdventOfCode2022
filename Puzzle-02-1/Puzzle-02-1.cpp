@@ -67,52 +67,37 @@ bool p2_wins(const char p1, const char p2)
         (p1 == 'S' && p2 == 'R');
 }
 
-void do_the_thing(const matches &input, bool real_decode)
+void do_the_thing(const matches const& input, const bool real_decode)
 {
-    unsigned long score_p1 = 0;
     unsigned long score_p2 = 0;
-    unsigned long line = 1;
-
-    for (auto in : input)
+ 
+    for (auto match : input)
     {
         char p1, p2;
 
         try
         {
-            p1 = shape_decode.at(in.first);
+            p1 = shape_decode.at(match.first);
             if (real_decode)
-                p2 = shape_decode_p2_real.at({ p1, in.second });
+                p2 = shape_decode_p2_real.at({ p1, match.second });
             else
-                p2 = shape_decode.at(in.second);
+                p2 = shape_decode.at(match.second);
         }
         catch (...)
         {
-            std::cout << "Bad input: {" << in.first << ", " << in.second << "}" << std::endl;
+            std::cout << "Bad input: {" << match.first << ", " << match.second << "}" << std::endl;
             return;
         }
 
-        score_p1 += shape_score.at(p1);
         score_p2 += shape_score.at(p2);
 
         if (p1 == p2)
-        {
-            score_p1 += draw_score;
             score_p2 += draw_score;
-        }
-        else
-        {
-            if (p2_wins(p1, p2))
-            {
-                score_p2 += win_score;
-            }
-            else
-            {
-                score_p1 += win_score;
-            }
-        }
+        else if (p2_wins(p1, p2))
+            score_p2 += win_score;
     }
 
-    std::cout << "Score after " << line - 1 << " matches (" << (real_decode ? "correct" : "incorrect") << " estrategy): " << score_p2 << " (rival score: " << score_p1 << ")" << std::endl;
+    std::cout << "Score with " << (real_decode ? "correct" : "incorrect") << " estrategy: " << score_p2 << std::endl;
 }
 
 int main()
