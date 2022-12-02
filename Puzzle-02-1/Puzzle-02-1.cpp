@@ -51,10 +51,8 @@ matches parse_input(std::istream &input)
     {
         char p1, p2;
         input >> p1;
-        if (!input.good()) break;
         input >> p2;
-        if (!input.good()) break;
-        data.push_back({ p1, p2 });
+        if (input.good()) data.push_back({ p1, p2 });
     }
 
     return data;
