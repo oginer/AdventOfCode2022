@@ -91,7 +91,7 @@ void do_the_thing(bool real_decode)
         ++line;
     }
 
-    std::cout << "Score after " << line - 1 << " matches (" << (real_decode ? "correct" : "incorrect") << " estratey): " << score_p2 << " (rival score: " << score_p1 << ")" << std::endl;
+    std::cout << "Score after " << line - 1 << " matches (" << (real_decode ? "correct" : "incorrect") << " estrategy): " << score_p2 << " (rival score: " << score_p1 << ")" << std::endl;
 }
 
 int main()
