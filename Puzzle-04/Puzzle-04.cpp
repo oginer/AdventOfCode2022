@@ -40,7 +40,7 @@ void part1(t_input input)
 	unsigned result = std::reduce(input.begin(), input.end(), 0u,
 		[](const unsigned acc, const auto& data) -> unsigned
 		{
-			// One elves fully overlaps the other one both his assigments are between the other elf assigments.
+			// One elves fully overlaps the other one when both of his assigments are between the other elf assigments.
 			if ((data[0][0] >= data[1][0] && data[0][1] <= data[1][1]) ||
 			data[1][0] >= data[0][0] && data[1][1] <= data[0][1])
 				return acc + 1;
@@ -57,9 +57,9 @@ void part2(t_input input)
 	unsigned result = std::reduce(input.begin(), input.end(), 0u,
 		[](const unsigned acc, const auto& data) -> unsigned
 		{
-			// It's easier to test when assignments don't overlap: when either
-			//   - both values are less than the other elve low value or
-			//   - both values are greater than the other elve high value
+			// It's easier to test when assignments don't overlap, which is when either:
+			//   - both values of one elve are less than the other elve's low value or
+			//   - both values of one elve are greater than the other elve's high value
 			if ((data[0][0] < data[1][0] && data[0][1] < data[1][0]) ||
 			data[0][0] > data[1][1] && data[0][1] > data[1][1])
 				return acc;
