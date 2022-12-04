@@ -5,6 +5,9 @@
 #include <vector>
 #include <algorithm>
 #include <span>
+#include <numeric>
+#include <ranges>
+#include <array>
 
 unsigned short priority(char c)
 {
@@ -14,50 +17,82 @@ unsigned short priority(char c)
 		return c - 'a' + 1;
 }
 
-int main()
+template <class T>
+std::set<T> intersection(const std::set<T> & items1, const std::set<T> & items2)
 {
-	std::ifstream file("input.txt");
+	std::set<T> repeats;
+	std::ranges::set_intersection(items1, items2, std::inserter(repeats, repeats.begin()));
+	return repeats;
+}
+
+std::vector<std::string> read_input(std::istream& is)
+{
+	std::vector<std::string> result;
 	std::string line;
-	std::set<char> group_backsack[3];
-	int group_index = 0;
+	while (std::getline(is, line))
+		result.push_back(line);
+	return result;
+}
 
-	unsigned long sum = 0;
-	unsigned long sum_badges = 0;
+using t_input = std::vector<std::string>;
 
-	while (std::getline(file, line))
+t_input read_input(std::istream&& is)
+{
+	return read_input(is);
+}
+
+void part1(const t_input& input)
+{
+	//std::vector<char> repeats;
+	unsigned int result = std::transform_reduce(input.begin(), input.end(), 0u,
+		[](const int acc, const char c) -> unsigned int
+		{
+			return acc + priority(c);
+		},
+		[](const std::string& s) -> char
+		{
+			std::set<char> first(s.begin(), s.begin() + s.length() / 2);
+			std::set<char> second(s.begin() + s.length() / 2, s.end());
+			return *(intersection(first, second).begin());
+		}
+	);
+
+	std::cout << "Sum of repeats: " << result << std::endl;
+}
+
+void part2(const t_input& input)
+{
+	unsigned sum_badges = 0;
+
+	std::vector<std::array<std::set<char>,3>> group_backsack;
+
+	for (auto it = input.begin(); it != input.end();)
 	{
-		auto rucksacks_size = line.length();
-		auto comp_size = rucksacks_size / 2;
-		std::set<char> comp_item_types[2];
+		std::array<std::set<char>, 3> backsack_chunk;
 
-		comp_item_types[0].insert(line.begin(), line.begin() + comp_size);
-		comp_item_types[1].insert(line.begin()+comp_size, line.end());
-
-		std::vector<char> repeats(1);
-		std::ranges::set_intersection(comp_item_types[0], comp_item_types[1], repeats.begin());
-
-		sum += priority(repeats[0]);
-
-		group_backsack[group_index] = std::set<char>(line.begin(), line.end());
-
-		if (group_index == 2)
+		for (int i = 0; i < 3; ++i)
 		{
-			std::vector<char> first_intersection;
-			std::ranges::set_intersection(group_backsack[0], group_backsack[1], std::back_inserter(first_intersection));
-
-			std::vector<char> badge;
-			std::ranges::set_intersection(group_backsack[2], first_intersection, std::back_inserter(badge));
-
-			sum_badges += priority(badge[0]);
-
-			group_index = 0;
+			backsack_chunk[i] = std::set<char>{ it->begin(), it->end() };
+			it++;
 		}
-		else
-		{
-			++group_index;
-		}
+
+		group_backsack.push_back(backsack_chunk);
 	}
 
-	std::cout << "Sum of repeats = " << sum << std::endl;
+	sum_badges = std::reduce(group_backsack.begin(), group_backsack.end(), 0u,
+		[](const unsigned acc, const std::array<std::set<char>, 3> backsacks) -> unsigned int
+		{
+			char badge = *(std::reduce(backsacks.begin()+1, backsacks.end(), backsacks[0], intersection<char>).begin());
+			return acc + priority(badge);
+		}
+	);
 	std::cout << "Sum of badges = " << sum_badges << std::endl;
+}
+
+int main()
+{
+	auto input = read_input(std::ifstream("input.txt"));
+
+	part1(input);
+	part2(input);
 }
