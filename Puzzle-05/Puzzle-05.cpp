@@ -32,9 +32,9 @@ cargo parse_cargo(std::istream& input)
 	result.stacks.resize(n_stacks);
 	do
 	{
-		for (int i = 0; i < n_stacks; ++i)
+		for (size_t i = 0; i < n_stacks; ++i)
 		{
-			char c = line[1 + i * 4];
+			char c = line[i*4 + 1];
 			if (c != ' ') result.stacks[i].push_front(c);
 		}
 
