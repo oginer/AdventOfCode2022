@@ -82,7 +82,7 @@ void print_stack_tops(const cargo& cargos)
 
 void part1(cargo cargos, const std::vector<operation>& ops)
 {
-	for (auto op : ops)
+	for (operation op : ops)
 	{
 		for (unsigned i = 0; i < op.qty; ++i)
 		{
@@ -96,7 +96,7 @@ void part1(cargo cargos, const std::vector<operation>& ops)
 
 void part2(cargo cargos, const std::vector<operation>& ops)
 {
-	for (auto op : ops)
+	for (operation op : ops)
 	{
 		auto it = std::prev(cargos.stacks[op.from].cend(), op.qty);
 		cargos.stacks[op.to].splice(cargos.stacks[op.to].cend(), cargos.stacks[op.from], it, cargos.stacks[op.from].cend());
