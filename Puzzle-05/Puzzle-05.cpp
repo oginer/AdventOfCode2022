@@ -1,16 +1,17 @@
 #include <iostream>
 #include <vector>
-#include <stack>
+#include <list>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <ranges>
 #include <algorithm>
 #include <numbers>
+#include <ranges>
 
 struct cargo
 {
-	std::vector<std::stack<char>> stacks;
+	std::vector<std::list<char>> stacks;
 };
 
 struct operation
@@ -25,26 +26,19 @@ cargo parse_cargo(std::istream& input)
 	cargo result;
 
 	std::string line;
-	std::vector<std::string> lines;
 
-	while (std::getline(input, line) && line != "")
-	{
-		lines.push_back(line);
-	}
-
-	size_t n_stacks = (lines.rbegin()->length() + 1) / 4;
-
-	result.stacks.push_back({});
-	result.stacks.resize(n_stacks, std::stack<char>{});
-
-	for (auto l : lines | std::views::reverse | std::views::drop(1))
+	std::getline(input, line);
+	size_t n_stacks = (line.length() + 1) / 4;
+	result.stacks.resize(n_stacks);
+	do
 	{
 		for (int i = 0; i < n_stacks; ++i)
 		{
-			char c = l[1 + i * 4];
-			if (c != ' ') result.stacks[i].push(c);
+			char c = line[1 + i * 4];
+			if (c != ' ') result.stacks[i].push_front(c);
 		}
-	}
+
+	} while (std::getline(input, line) && !std::isdigit(line[1]));
 
 	return result;
 }
@@ -77,52 +71,45 @@ std::vector<operation> parse_operations(std::istream& input)
 	return result;
 }
 
+void print_stack_tops(const cargo& cargos)
+{
+	for (auto c : cargos.stacks)
+	{
+		std::cout << c.back();
+	}
+	std::cout << std::endl;
+}
+
 void part1(cargo cargos, const std::vector<operation>& ops)
 {
 	for (auto op : ops)
 	{
 		for (unsigned i = 0; i < op.qty; ++i)
 		{
-			cargos.stacks[op.to].push(cargos.stacks[op.from].top());
-			cargos.stacks[op.from].pop();
+			cargos.stacks[op.to].push_back(cargos.stacks[op.from].back());
+			cargos.stacks[op.from].pop_back();
 		}
 	}
 
-	for (auto c : cargos.stacks)
-	{
-		std::cout << c.top();
-	}
-	std::cout << std::endl;
+	print_stack_tops(cargos);
 }
 
 void part2(cargo cargos, const std::vector<operation>& ops)
 {
 	for (auto op : ops)
 	{
-		std::stack<char> stk;
-		for (unsigned i = 0; i < op.qty; ++i)
-		{
-			stk.push(cargos.stacks[op.from].top());
-			cargos.stacks[op.from].pop();
-		}
-		while (!stk.empty())
-		{
-			cargos.stacks[op.to].push(stk.top());
-			stk.pop();
-		}
+		auto it = std::prev(cargos.stacks[op.from].cend(), op.qty);
+		cargos.stacks[op.to].splice(cargos.stacks[op.to].cend(), cargos.stacks[op.from], it, cargos.stacks[op.from].cend());
 	}
 
-	for (auto c : cargos.stacks)
-	{
-		std::cout << c.top();
-	}
-	std::cout << std::endl;
+	print_stack_tops(cargos);
 }
 
 
 int main()
 {
 	std::ifstream input("input.txt");
+
 	cargo cargos = parse_cargo(input);
 	std::vector<operation> ops = parse_operations(input);
 
