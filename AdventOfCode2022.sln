@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-05", "Puzzle-05\Puzz
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-06", "Puzzle-06\Puzzle-06.vcxproj", "{FBA3D5F9-9DA4-4F71-BE7F-C18450CC79F5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxitems", "{D3D6830B-92F3-48FC-A8FB-43BC58094164}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

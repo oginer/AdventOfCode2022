@@ -4,6 +4,9 @@
 #include <map>
 #include <vector>
 
+#include "../utils/timer.h"
+
+
 constexpr unsigned win_score = 6;
 constexpr unsigned draw_score = 3;
 
@@ -100,6 +103,8 @@ void do_the_thing(const matches const& input, const bool real_decode)
 
 int main()
 {
+    Timer t;
+
     std::ifstream file("input.txt");
     auto input = parse_input(file);
 
