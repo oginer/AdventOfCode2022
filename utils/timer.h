@@ -13,7 +13,7 @@ public:
 		m_start = std::chrono::steady_clock::now();
 	}
 
-	void finish()
+	void finish() const
 	{
 		auto end = std::chrono::steady_clock::now();
 
