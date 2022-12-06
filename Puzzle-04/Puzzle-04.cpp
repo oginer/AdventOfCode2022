@@ -8,6 +8,9 @@
 #include <sstream>
 #include <array>
 
+#include "../utils/timer.h"
+
+
 struct assignment
 {
 	struct
@@ -78,6 +81,8 @@ void part2(const t_input &input)
 
 int main()
 {
+	Timer t;
+
 	auto input = parse_input(std::ifstream("input.txt"));
 	part1(input);
 	part2(input);

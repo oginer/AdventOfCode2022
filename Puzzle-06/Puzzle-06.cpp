@@ -4,6 +4,8 @@
 #include <ranges>
 #include <algorithm>
 
+#include "../utils/timer.h"
+
 
 size_t find_first_unique_chunk(const std::string &input, unsigned n)
 {
@@ -18,6 +20,8 @@ size_t find_first_unique_chunk(const std::string &input, unsigned n)
 
 int main()
 {
+	Timer t;
+
 	std::string input;
 	std::getline(std::ifstream("input.txt"), input);
 

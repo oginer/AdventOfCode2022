@@ -4,10 +4,15 @@
 #include <set>
 #include <numeric>
 
+#include "../utils/timer.h"
+
+
 using namespace std;
 
 int main()
 {
+	Timer t;
+
 	string line;
 	ifstream input("input.txt");
 	multiset<unsigned long, greater<unsigned long>> elf_ranking;

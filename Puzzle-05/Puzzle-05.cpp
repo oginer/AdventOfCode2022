@@ -9,6 +9,9 @@
 #include <numbers>
 #include <ranges>
 
+#include "../utils/timer.h"
+
+
 struct cargo
 {
 	std::vector<std::list<char>> stacks;
@@ -108,6 +111,8 @@ void part2(cargo cargos, const std::vector<operation>& ops)
 
 int main()
 {
+	Timer t;
+
 	std::ifstream input("input.txt");
 
 	cargo cargos = parse_cargo(input);

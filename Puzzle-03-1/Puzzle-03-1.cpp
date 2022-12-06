@@ -9,6 +9,9 @@
 #include <ranges>
 #include <array>
 
+#include "../utils/timer.h"
+
+
 unsigned short priority(char c)
 {
 	if (c <= 'Z')  // is c uppercase?
@@ -91,6 +94,8 @@ void part2(const t_input& input)
 
 int main()
 {
+	Timer t;
+
 	auto input = read_input(std::ifstream("input.txt"));
 
 	part1(input);
