@@ -25,6 +25,12 @@ private:
 	Folder* m_parent;
 	unsigned long m_size;
 
+	void increment_size(unsigned long add)
+	{
+		m_size += add;
+		if (m_parent) m_parent->increment_size(add);
+	}
+
 public:
 	Folder(Folder* parent = nullptr)
 		:m_parent(parent), m_size(0)
@@ -34,6 +40,8 @@ public:
 	void create_file(const std::string &name, unsigned long size)
 	{
 		m_files[name].size = size;
+		m_size += size;
+		if (m_parent) m_parent->increment_size(size);
 	}
 
 	const File& file(const std::string& name) const
@@ -43,12 +51,7 @@ public:
 
 	const unsigned size() const
 	{
-		return std::accumulate(m_files.cbegin(), m_files.cend(), 0,
-			[](unsigned long acc, std::pair<std::string, File> f)
-			{
-				return acc + f.second.size;
-			}
-		);
+		return m_size;
 	}
 
 	void create_folder(const std::string &name)
@@ -142,27 +145,25 @@ Folder parse_input(std::istream&& input)
 	return parse_input(input);
 }
 
-unsigned long find_small_folders(const Folder& f, std::vector<unsigned long>& v)
+void find_small_folders(const Folder& f, std::vector<unsigned long>& v)
 {
 	unsigned long sum = f.size();
 	auto childs = f.childs();
 
 	for (const auto& child : childs)
 	{
-		sum += find_small_folders(*child, v);
+		find_small_folders(*child, v);
 	}
 
 	if (sum < 100000) v.push_back(sum);
-
-	return sum;
 }
 
 void part1(const Folder &root)
 {
 	std::vector<unsigned long> sizes;
 
-	unsigned long sum = find_small_folders(root, sizes);
-	if (sum < 100000) sizes.push_back(sum);
+	find_small_folders(root, sizes);
+	if (root.size() < 100000) sizes.push_back(root.size());
 
 	std::cout << "Total size of small folders: " << std::accumulate(sizes.cbegin(), sizes.cend(), 0ul) << std::endl;
 }
