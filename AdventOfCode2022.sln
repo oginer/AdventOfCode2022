@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-01-1", "Puzzle-01-1\Puzzle-01-1.vcxproj", "{ED8442C6-DB03-4343-B21D-AC8D4352B9D9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-01", "Puzzle-01-1\Puzzle-01-1.vcxproj", "{ED8442C6-DB03-4343-B21D-AC8D4352B9D9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-02-1", "Puzzle-02-1\Puzzle-02-1.vcxproj", "{1AE9B431-2174-4209-9BD0-16DF96BC2010}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-02", "Puzzle-02-1\Puzzle-02-1.vcxproj", "{1AE9B431-2174-4209-9BD0-16DF96BC2010}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-03-1", "Puzzle-03-1\Puzzle-03-1.vcxproj", "{220DDAD5-8CFC-4DDC-BA48-C349B6EBB27E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-03", "Puzzle-03-1\Puzzle-03-1.vcxproj", "{220DDAD5-8CFC-4DDC-BA48-C349B6EBB27E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-04", "Puzzle-04\Puzzle-04.vcxproj", "{6747B76D-9149-452E-9B6D-6FD30FAF71CD}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-06", "Puzzle-06\Puzzle-06.vcxproj", "{FBA3D5F9-9DA4-4F71-BE7F-C18450CC79F5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxitems", "{D3D6830B-92F3-48FC-A8FB-43BC58094164}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Puzzle-07", "Puzzle-07\Puzzle-07.vcxproj", "{34AC33E5-B165-4576-A2CF-A21549854F09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,14 @@ Global
 		{FBA3D5F9-9DA4-4F71-BE7F-C18450CC79F5}.Release|x64.Build.0 = Release|x64
 		{FBA3D5F9-9DA4-4F71-BE7F-C18450CC79F5}.Release|x86.ActiveCfg = Release|Win32
 		{FBA3D5F9-9DA4-4F71-BE7F-C18450CC79F5}.Release|x86.Build.0 = Release|Win32
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Debug|x64.ActiveCfg = Debug|x64
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Debug|x64.Build.0 = Debug|x64
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Debug|x86.ActiveCfg = Debug|Win32
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Debug|x86.Build.0 = Debug|Win32
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Release|x64.ActiveCfg = Release|x64
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Release|x64.Build.0 = Release|x64
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Release|x86.ActiveCfg = Release|Win32
+		{34AC33E5-B165-4576-A2CF-A21549854F09}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
