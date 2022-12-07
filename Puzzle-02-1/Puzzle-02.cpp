@@ -68,7 +68,7 @@ bool p2_wins(const char p1, const char p2)
         (p1 == 'S' && p2 == 'R');
 }
 
-void do_the_thing(const matches const& input, const bool real_decode)
+void do_the_thing(const matches &input, const bool real_decode)
 {
     unsigned long score_p2 = 0;
  
