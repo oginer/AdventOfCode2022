@@ -1,20 +1,16 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
 #include <vector>
+#include <list>
 #include <string>
 #include <ranges>
-#include <algorithm>
 #include <numeric>
-#include <list>
 #include <ranges>
-#include <execution>
 
 #include "../utils/timer.h"
 
+using t_input = std::vector<unsigned long>;
 
 std::vector<std::string> parse_command(const std::string& str)
 {
@@ -24,75 +20,51 @@ std::vector<std::string> parse_command(const std::string& str)
 		[&result](const auto& v)
 		{
 			result.push_back(std::string(v.begin(), v.end()));
-		}
-	);
-
+		});
+	
 	return result;
 }
 
-using t_input = std::unordered_map<std::string, unsigned long>;
-
-std::string dir_up(const std::string& str)
-{
-	auto pos = str.find_last_of('/');
-	if (pos != std::string::npos)
-		return str.substr(0, str.find_last_of('/'));
-	else
-		return "";
-}
-
-t_input parse_input(std::istream& input)
+std::vector<unsigned long> parse_input(std::istream& input)
 {
 	t_input result;
 
-	std::string root = "";
-	std::string current_path = root;
-	result[""] = 0;
+	result.push_back(0);
+	size_t current_dir = 0;
 
-	std::list<unsigned long *> parents;
+	std::list<size_t> parents;
 
 	std::string line;
 	while (std::getline(input, line))
 	{
 		auto command = parse_command(line);
 
-		if (command[0] == "$")
+		if (command[0] == "$" && command[1] == "cd")
 		{
-			if (command[1] == "cd")
+			if (command[2] == "/")
 			{
-				if (command[2] == "/")
-				{
-					current_path = root;
-					parents = { };
-				}
-				else if (command[2] == "..")
-				{
-					current_path = dir_up(current_path);
-					parents.pop_back();
-				}
-				else
-				{
-					parents.push_back(&result[current_path]);
-					current_path = current_path + "/" + command[2];
-				}
+				parents = { };
+			}
+			else if (command[2] == "..")
+			{
+				current_dir = parents.back();
+				parents.pop_back();
+			}
+			else
+			{
+				parents.push_back(current_dir);
+				current_dir = result.size();
+				result.push_back(0);
 			}
 		}
-		else if (command[0] == "dir")
+		else if (std::isdigit(command[0][0]))
 		{
-			result[current_path + "/" + command[1]] = 0;
-		}
-		else
-		{
-			try
+			unsigned long size = std::stoul(command[0]);
+			result[current_dir] += size;
+			for (auto& parent : parents)
 			{
-				unsigned long size = std::stoul(command[0]);
-				result.at(current_path) += size;
-				for (auto &parent : parents)
-				{
-					*parent += size;
-				}
+				result[parent] += size;
 			}
-			catch (...) {}
 		}
 	}
 
@@ -102,7 +74,6 @@ t_input parse_input(std::istream& input)
 t_input parse_input(std::istream&& input)
 {
 	return parse_input(input);
-
 }
 
 void part1(const t_input& input)
@@ -110,12 +81,25 @@ void part1(const t_input& input)
 	auto sum = std::reduce(input.begin(), input.end(), 0ul,
 		[](unsigned long acc, const auto& p)
 		{
-			return p.second <= 100000 ? acc + p.second : acc;
+			return p <= 100000 ? acc + p : acc;
 		}
 	);
 
-	std::cout << "p1: " << sum << std::endl;
+	std::cout << "Sum of all folders smaller than 100000: " << sum << std::endl;
 }
+
+void part2(const t_input& input)
+{
+	constexpr unsigned long disk_size = 70000000;
+	constexpr unsigned long needed_free_space = 30000000;
+
+	const unsigned long need_to_free = input[0] - (disk_size - needed_free_space);
+
+	auto min = std::ranges::min(input | std::views::filter([need_to_free](unsigned long a) {return a >= need_to_free; }));
+
+	std::cout << "Smallest folder to delete: " << min << std::endl;
+}
+
 
 int main()
 {
@@ -124,5 +108,5 @@ int main()
 	t_input input = parse_input(std::ifstream("input.txt"));
 
 	part1(input);
-//	part2(input);
+	part2(input);
 }
