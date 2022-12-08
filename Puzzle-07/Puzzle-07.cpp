@@ -6,9 +6,9 @@
 #include <string>
 #include <ranges>
 #include <numeric>
-#include <ranges>
 
 #include "../utils/timer.h"
+
 
 using t_input = std::vector<unsigned long>;
 
