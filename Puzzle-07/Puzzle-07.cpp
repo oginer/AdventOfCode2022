@@ -43,7 +43,7 @@ std::vector<unsigned long> parse_input(std::istream& input)
 		{
 			if (command[2] == "/")
 			{
-				parents = { };
+				parents.erase(parents.begin(), parents.end());
 			}
 			else if (command[2] == "..")
 			{
@@ -85,7 +85,7 @@ void part1(const t_input& input)
 		}
 	);
 
-	std::cout << "Sum of all folders smaller than 100000: " << sum << std::endl;
+	std::cout << "Sum of all folders smaller than 100000:   " << sum << std::endl;
 }
 
 void part2(const t_input& input)
@@ -97,7 +97,7 @@ void part2(const t_input& input)
 
 	auto min = std::ranges::min(input | std::views::filter([need_to_free](unsigned long a) {return a >= need_to_free; }));
 
-	std::cout << "Smallest folder to delete: " << min << std::endl;
+	std::cout << "Smallest folder to delete:                " << min << std::endl;
 }
 
 
@@ -106,6 +106,8 @@ int main()
 	Timer t;
 
 	t_input input = parse_input(std::ifstream("input.txt"));
+
+	std::cout << "Disk usage:                               " << input[0] << std::endl;
 
 	part1(input);
 	part2(input);
