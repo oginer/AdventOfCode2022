@@ -200,9 +200,9 @@ void part2(const forest& input)
 {
 	unsigned long max_score = 0;
 
-	for (size_t i = 0; i < input.size(); ++i)
+	for (size_t i = 1; i < input.size()-1; ++i)
 	{
-		for (size_t j = 0; j < input[0].size(); ++j)
+		for (size_t j = 1; j < input[0].size()-1; ++j)
 		{
 			auto score = scenic_score(input, i, j);
 			max_score = std::max(score, max_score);
