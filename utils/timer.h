@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iomanip>
 #include <chrono>
 
 class Timer
