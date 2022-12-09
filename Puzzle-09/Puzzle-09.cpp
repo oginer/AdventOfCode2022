@@ -14,11 +14,6 @@ struct position
 {
     int x, y;
 
-    bool operator ==(const position& p) const
-    {
-        return x == p.x && y == p.y;
-    }
-
     bool operator < (const position& p) const
     {
         if (x < p.x) return true;
@@ -29,7 +24,7 @@ struct position
 
 struct movement
 {
-    enum : char {up, down, right, left} dir;
+    enum {up, down, right, left} dir;
     int distance;
 
 };
