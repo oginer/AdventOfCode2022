@@ -3,8 +3,7 @@
 #include <fstream>
 #include <numeric>
 #include <algorithm>
-#include <set>
-#include <list>
+#include <unordered_set>
 
 #include "../utils/timer.h"
 #include "../utils/parse_helper.h"
@@ -14,19 +13,38 @@ struct position
 {
     int x, y;
 
-    bool operator < (const position& p) const
+    bool operator == (const position& p) const
     {
-        if (x < p.x) return true;
-        if (x > p.x) return false;
-        return y < p.y;
+        return x == p.x && y == p.y;
+    }
+
+    void operator += (const std::pair<int, int>& v)
+    {
+        x += v.first;
+        y += v.second;
     }
 };
 
+namespace std
+{
+    template<> struct hash<position>
+    {
+        size_t operator()(const position& p) const
+        {
+            return p.x ^ (p.y << 8);
+        }
+    };
+}
+
 struct movement
 {
-    enum {up, down, right, left} dir;
+    std::pair<int, int> direction;
     int distance;
 
+    static constexpr std::pair<int, int> up {0,1};
+    static constexpr std::pair<int, int> down {0,-1};
+    static constexpr std::pair<int, int> left {-1,0};
+    static constexpr std::pair<int, int> right {1,0};
 };
 
 std::vector<movement> parse_input(std::istream& input)
@@ -43,16 +61,16 @@ std::vector<movement> parse_input(std::istream& input)
         switch (command[0][0])
         {
         case 'U':
-            mov.dir = movement::up;
+            mov.direction = movement::up;
             break;
         case 'D':
-            mov.dir = movement::down;
+            mov.direction = movement::down;
             break;
         case 'L':
-            mov.dir = movement::left;
+            mov.direction = movement::left;
             break;
         case 'R':
-            mov.dir = movement::right;
+            mov.direction = movement::right;
             break;
         default:
             continue;
@@ -67,7 +85,7 @@ std::vector<movement> parse_input(std::istream& input)
 
 bool tail_touches_head(const position &head, const position &tail )
 {
-    if (abs(tail.x - head.x) <= 1 && abs(tail.y - head.y) <= 1)
+    if (std::abs(tail.x - head.x) <= 1 && std::abs(tail.y - head.y) <= 1)
         return true;
     else
         return false;
@@ -75,39 +93,25 @@ bool tail_touches_head(const position &head, const position &tail )
 
 void fix_tail(const position& head, position& tail)
 {
-    int dx = tail.x - head.x;
-    int dy = tail.y - head.y;
+    const int dx = tail.x - head.x;
+    const int dy = tail.y - head.y;
 
     if (dx > 0) tail.x--;
-    if (dx < 0) tail.x++;
+    else if (dx < 0) tail.x++;
     if (dy > 0) tail.y--;
-    if (dy < 0) tail.y++;
+    else if (dy < 0) tail.y++;
 }
 
 void simulate_rope(const std::vector<movement>& input, const int n_knots)
 {
-    std::set<position> tail_positions = { {0,0} };
+    std::unordered_set<position> tail_positions = { {0,0} };
     std::vector<position> rope(n_knots, { 0,0 });
 
     for (auto &command : input)
     {
         for (auto i : std::views::iota(0, command.distance))
         {
-            switch (command.dir)
-            {
-            case (movement::down):
-                rope[0].y--;
-                break;
-            case (movement::up):
-                rope[0].y++;
-                break;
-            case (movement::left):
-                rope[0].x--;
-                break;
-            case (movement::right):
-                rope[0].x++;
-                break;
-            }
+            rope[0] += command.direction;
 
             for (int i: std::views::iota(1, n_knots))
             {
