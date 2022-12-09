@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)parse_helper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)timer.h" />
   </ItemGroup>
 </Project>
