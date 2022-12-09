@@ -86,11 +86,8 @@ void fix_tail(const position& head, position& tail)
 
 void simulate_rope(const std::vector<movement>& input, const int n_knots)
 {
-    std::set<position> tail_positions;
-
+    std::set<position> tail_positions = { {0,0} };
     std::vector<position> rope(n_knots, { 0,0 });
-
-    tail_positions.insert(rope[n_knots - 1]);
 
     for (auto &command : input)
     {
