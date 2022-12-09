@@ -117,18 +117,18 @@ void simulate_rope(const std::vector<movement>& input, const int n_knots)
                 break;
             }
 
-            for (int i = 1; i < n_knots; ++i)
+            for (int i: std::views::iota(1, n_knots))
             {
-                while (!tail_touches_head(rope[i-1], rope[i]))
+                if (!tail_touches_head(rope[i-1], rope[i]))
                 {
                     fix_tail(rope[i-1], rope[i]);
-                    tail_positions.insert(rope[n_knots-1]);
                 }
             }
-        }
+            tail_positions.insert(rope[n_knots-1]);
+       }
     }
 
-    std::cout << "Number of positions (rope with " << n_knots << "): " << tail_positions.size() << std::endl;
+    std::cout << "Number of tail positions (rope with " << n_knots << " knots): " << tail_positions.size() << std::endl;
 }
 
 std::vector<movement> parse_input(std::istream&& input)
