@@ -83,7 +83,7 @@ void fix_tail(const position& head, position& tail)
     int dx = tail.x - head.x;
     int dy = tail.y - head.y;
 
-    if (dx == 0 || dx == 0)
+    if (dx == 0 || dy == 0)
     {
         if (dx > 1) tail.x--;
         if (dx < -1) tail.x++;
