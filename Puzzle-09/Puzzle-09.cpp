@@ -83,29 +83,19 @@ void fix_tail(const position& head, position& tail)
     int dx = tail.x - head.x;
     int dy = tail.y - head.y;
 
-    if (dx == 0 || dy == 0)
-    {
-        if (dx > 1) tail.x--;
-        if (dx < -1) tail.x++;
-        if (dy > 1) tail.y--;
-        if (dy < -1) tail.y++;
-    }
-    else
-    {
-        if (dx > 0) tail.x--;
-        if (dx < 0) tail.x++;
-        if (dy > 0) tail.y--;
-        if (dy < 0) tail.y++;
-    }
+    if (dx > 0) tail.x--;
+    if (dx < 0) tail.x++;
+    if (dy > 0) tail.y--;
+    if (dy < 0) tail.y++;
 }
 
 void simulate_rope(const std::vector<movement>& input, const int n_knots)
 {
-    std::set<position> positions;
+    std::set<position> tail_positions;
 
     std::vector<position> rope(n_knots, { 0,0 });
 
-    positions.insert(rope[n_knots - 1]);
+    tail_positions.insert(rope[n_knots - 1]);
 
     for (auto &command : input)
     {
@@ -132,13 +122,13 @@ void simulate_rope(const std::vector<movement>& input, const int n_knots)
                 while (!tail_touches_head(rope[i-1], rope[i]))
                 {
                     fix_tail(rope[i-1], rope[i]);
-                    positions.insert(rope[n_knots-1]);
+                    tail_positions.insert(rope[n_knots-1]);
                 }
             }
         }
     }
 
-    std::cout << "Number of positions (rope with " << n_knots << "): " << positions.size() << std::endl;
+    std::cout << "Number of positions (rope with " << n_knots << "): " << tail_positions.size() << std::endl;
 }
 
 std::vector<movement> parse_input(std::istream&& input)
