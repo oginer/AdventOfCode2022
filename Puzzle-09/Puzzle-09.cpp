@@ -83,6 +83,11 @@ std::vector<movement> parse_input(std::istream& input)
     return result;
 }
 
+std::vector<movement> parse_input(std::istream&& input)
+{
+    return parse_input(input);
+}
+
 bool tail_touches_head(const position &head, const position &tail )
 {
     return std::abs(tail.x - head.x) <= 1 && std::abs(tail.y - head.y) <= 1;
@@ -122,11 +127,6 @@ void simulate_rope(const std::vector<movement>& input, const unsigned n_knots)
     }
 
     std::cout << "Number of tail positions (rope with " << n_knots << " knots): " << tail_positions.size() << std::endl;
-}
-
-std::vector<movement> parse_input(std::istream&& input)
-{
-    return parse_input(input);
 }
 
 int main()
