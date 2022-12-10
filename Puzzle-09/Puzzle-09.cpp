@@ -13,12 +13,9 @@ struct position
 {
     int x, y;
 
-    bool operator == (const position& p) const
-    {
-        return x == p.x && y == p.y;
-    }
+    constexpr bool operator == (const position& p) const = default;
 
-    void operator += (const std::pair<int, int>& v)
+    constexpr void operator += (const std::pair<int, int>& v)
     {
         x += v.first;
         y += v.second;
@@ -39,7 +36,7 @@ namespace std
 struct movement
 {
     std::pair<int8_t, int8_t> direction;
-    unsigned distance;
+    unsigned distance = 0;
 
     static constexpr decltype(direction) up {0,1};
     static constexpr decltype(direction) down {0,-1};
