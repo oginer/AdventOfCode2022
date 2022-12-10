@@ -69,6 +69,7 @@ void part1(const std::vector<instruction>& input)
 	std::cout << "sum = " << acc_registerx << std::endl;
 }
 
+
 constexpr unsigned crt_w = 40;
 constexpr unsigned crt_h = 6;
 
@@ -84,34 +85,41 @@ void draw_screen(const char screen[][crt_w])
 	}
 }
 
+void draw_sprite(int registerx, int current_col, char *current_pixel)
+{
+	if (registerx >= current_col - 1 &&
+		registerx <= current_col + 1)
+	{
+		*current_pixel = '#';
+	}
+}
+
 void part2(const std::vector<instruction>& input)
 {
 	char screen[crt_h][crt_w];
 	std::memset(screen, '.', crt_h * crt_w);
 
 	char* current_pixel = &(screen[0][0]);
-	int current_cycle = 0;
+	unsigned current_cycle = 0;
 	int current_col = 0;
 
 	int registerx = 1;
 	auto op = input.cbegin();
 
-	auto draw_pixel = [&]() {
-		if (registerx >= current_col - 1 && registerx <= current_col + 1) *current_pixel = '#';
-		++current_pixel;
-		current_col = (current_col + 1) % crt_w;
-	};
-
 	while (current_cycle < crt_h * crt_w)
 	{
-		for (int i = 0; i < op->cycles; ++i)
+		for (unsigned i = 0; i < op->cycles; ++i)
 		{
-			draw_pixel();
+			draw_sprite(registerx, current_col, current_pixel);
+			++current_pixel;
+			current_col = (current_col + 1) % crt_w;
 		}
+
 		if (op->opcode == instruction::addx)
 		{
 			registerx += op->param;
 		}
+
 		current_cycle += op->cycles;
 		op++;
 	}
