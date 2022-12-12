@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <functional>
 
 #include "../utils/timer.h"
 
@@ -14,15 +15,38 @@ struct node
 {
 	double f{ std::numeric_limits<double>::infinity() };
 	double g{ std::numeric_limits<double>::infinity() };
-	double h{ std::numeric_limits<double>::infinity() };
 	coord parent;
 };
 
-double heuristic(coord pos, coord finish)
+class heuristic_manhattan_distance
 {
-	return std::abs(pos.first - finish.first) + std::abs(pos.second - finish.second);
-//	return std::sqrt((pos.first - finish.first)*(pos.first - finish.first) + (pos.second - finish.second)*(pos.second - finish.second));
-}
+private:
+	coord finish;
+
+public:
+	heuristic_manhattan_distance(const coord& f)
+		:finish(f)
+	{}
+
+	double operator() (coord pos)
+	{
+		return std::abs(pos.first - finish.first) + std::abs(pos.second - finish.second);
+	}
+};
+
+class heuristic_zero
+{
+private:
+
+public:
+	heuristic_zero()
+	{}
+
+	double operator() (coord pos)
+	{
+		return 0;
+	}
+};
 
 std::vector<coord> get_neighbors_part1(const map& m, const coord& pos)
 {
@@ -38,6 +62,54 @@ std::vector<coord> get_neighbors_part1(const map& m, const coord& pos)
 	return result;
 }
 
+std::vector<coord> get_neighbors_part2(const map& m, const coord& pos)
+{
+	std::vector<coord> result;
+
+	int x = pos.first, y = pos.second;
+
+	if (x > 0 && m[x - 1][y] >= m[x][y] - 1) result.push_back({ x - 1, y });
+	if (y > 0 && m[x][y - 1] >= m[x][y] - 1) result.push_back({ x, y - 1 });
+	if (x < m.size() - 1 && m[x + 1][y] >= m[x][y] - 1) result.push_back({ x + 1, y });
+	if (y < m[0].length() - 1 && m[x][y + 1] >= m[x][y] - 1) result.push_back({ x, y + 1 });
+
+	return result;
+}
+
+
+class is_finish_part1
+{
+private:
+	coord finish;
+
+public:
+	is_finish_part1(const coord &c)
+		:finish(c)
+	{}
+
+	bool operator() (const coord& c)
+	{
+		return c == finish;
+	}
+};
+
+class is_finish_part2
+{
+private:
+	map m;
+
+public:
+	is_finish_part2(const map& input)
+		:m(input)
+	{}
+
+	bool operator() (const coord& c)
+	{
+		return m[c.first][c.second] == 'a';
+	}
+};
+
+
 std::vector<coord> generate_path(const std::vector<std::vector<node>>& nodes, const coord& end, const coord& start)
 {
 	std::vector<coord> path;
@@ -51,7 +123,7 @@ std::vector<coord> generate_path(const std::vector<std::vector<node>>& nodes, co
 	return path;
 }
 
-std::vector<coord> aStar(map m, coord start, coord finish, std::vector<coord> (*get_neighbors)(const map&, const coord&))
+std::vector<coord> aStar(map m, coord start, std::function<bool(const coord&)> is_finish, std::function<std::vector<coord>(const map&, const coord&)> get_neighbors, std::function<double(const coord&)> heuristic)
 {
 	std::priority_queue<std::pair<double, coord>, std::vector<std::pair<double, coord>>, std::greater<std::pair<double, coord>>> open_nodes;
 	std::vector<std::vector<bool>> closed_nodes{ m.size(), std::vector<bool>(m[0].size(), false)};
@@ -61,7 +133,6 @@ std::vector<coord> aStar(map m, coord start, coord finish, std::vector<coord> (*
 
 	nodes[start.first][start.second].f = 0.0;
 	nodes[start.first][start.second].g = 0.0;
-	nodes[start.first][start.second].h = 0.0;
 	nodes[start.first][start.second].parent = start;
 
 	while (!open_nodes.empty())
@@ -74,10 +145,9 @@ std::vector<coord> aStar(map m, coord start, coord finish, std::vector<coord> (*
 
 		for (auto& child : childs)
 		{
-			if (child == finish)
+			if (is_finish(child))
 			{
 				auto parent = nodes[child.first][child.second].parent;
-				std::cout << "Found: " << nodes[parent.first][parent.second].f << std::endl;
 				return generate_path(nodes, current_coord, start);
 			}
 
@@ -85,8 +155,8 @@ std::vector<coord> aStar(map m, coord start, coord finish, std::vector<coord> (*
 			{
 				node succesor;
 				succesor.g = nodes[current_coord.first][current_coord.second].g + 1.0;
-				succesor.h = heuristic(child, finish);
-				succesor.f = succesor.g + succesor.h;
+				double h = heuristic(child);
+				succesor.f = succesor.g + h;
 				succesor.parent = current_coord;
 
 				if (nodes[child.first][child.second].f > succesor.f)
@@ -143,15 +213,20 @@ t_input parse_input(std::istream&& input)
 
 void part1(const t_input& input)
 {
-	auto path = aStar(input.m, input.start, input.finish, get_neighbors_part1);
+	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_manhattan_distance{input.finish});
 
 	map  out = input.m;
-	for (auto pos : path)
-	{
-		out[pos.first][pos.second] = std::toupper(out[pos.first][pos.second]);
-	}
 
 	std::cout << "Shortest path size: " << path.size() << std::endl;
+}
+
+void part2(const t_input& input)
+{
+	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_zero{});
+
+	map  out = input.m;
+
+	std::cout << "Shortest path size backwards: " << path.size() << std::endl;
 }
 
 int main()
@@ -164,4 +239,5 @@ int main()
 	std::cout << "finish: (" << input.finish.first << ", " << input.finish.second << ")" << std::endl;
 
 	part1(input);
+	part2(input);
 }
