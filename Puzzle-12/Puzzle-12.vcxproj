@@ -131,11 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="astar.cpp" />
     <ClCompile Include="Puzzle-12.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="example.txt" />
     <Text Include="input.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="astar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
