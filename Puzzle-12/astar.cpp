@@ -19,7 +19,10 @@ std::vector<coord> generate_path(const std::vector<std::vector<node>>& nodes, co
 	return path;
 }
 
-std::vector<coord> aStar(const map& m, const coord& start, const std::function<bool(const coord&)> is_finish, const std::function<std::vector<coord>(const map&,const coord&)> get_neighbors, const std::function<double(const coord&)> heuristic)
+std::vector<coord> aStar(const map& m, const coord& start,
+	const std::function<bool(const coord&)> is_finish,
+	const std::function<std::vector<coord>(const map&,const coord&)> get_neighbors,
+	const std::function<double(const coord&)> heuristic)
 {
 	std::priority_queue<std::pair<double, coord>, std::vector<std::pair<double, coord>>, std::greater<std::pair<double, coord>>> open_nodes;
 	std::vector<std::vector<bool>> closed_nodes{ m.size(), std::vector<bool>(m[0].size(), false) };

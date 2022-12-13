@@ -12,16 +12,16 @@
 class heuristic_manhattan_distance
 {
 private:
-	coord finish;
+	const coord& m_finish;
 
 public:
 	heuristic_manhattan_distance(const coord& f)
-		:finish(f)
+		:m_finish(f)
 	{}
 
-	double operator() (coord pos) const
+	double operator() (const coord &pos) const
 	{
-		return std::abs(pos.first - finish.first) + std::abs(pos.second - finish.second);
+		return std::abs(pos.first - m_finish.first) + std::abs(pos.second - m_finish.second);
 	}
 };
 
@@ -33,11 +33,26 @@ public:
 	heuristic_zero()
 	{}
 
-	double operator() (coord pos) const
+	double operator() (const coord &pos) const
 	{
 		return 0;
 	}
 };
+
+class heuristic_distance_to_left
+{
+private:
+
+public:
+	class heuristic_distance_to_left()
+	{}
+
+	double operator() (const coord &pos) const
+	{
+		return pos.first;
+	}
+};
+
 
 std::vector<coord> get_neighbors_part1(const map& m, const coord& pos)
 {
@@ -143,30 +158,38 @@ t_input parse_input(std::istream&& input)
 void part1(const t_input& input)
 {
 	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_manhattan_distance{input.finish});
+//	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_zero{});
 
 	map  out = input.m;
 
-	std::cout << "Shortest path size: " << path.size() << std::endl;
+	std::cout << "Shortest path length: " << path.size() << std::endl;
 }
 
 void part2(const t_input& input)
 {
-	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_zero{});
+	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_distance_to_left{});
 
 	map  out = input.m;
 
-	std::cout << "Shortest path size backwards: " << path.size() << std::endl;
+	std::cout << "Shortest path length backwards: " << path.size() << std::endl;
 }
 
 int main()
 {
-	Timer t;
+	Timer t("Total");
 
+	Timer tInput("Input");
 	auto input = parse_input(std::ifstream("input.txt"));
+	tInput.finish();
 
 	std::cout << "start:  (" << input.start.first << ", " << input.start.second << ")" << std::endl;
-	std::cout << "finish: (" << input.finish.first << ", " << input.finish.second << ")" << std::endl;
+	std::cout << "finish: (" << input.finish.first << ", " << input.finish.second << ")" << std::endl << std::endl;
 
+	Timer tPart1;
 	part1(input);
+	tPart1.finish();
+
+	Timer tPart2;
 	part2(input);
+	tPart2.finish();
 }

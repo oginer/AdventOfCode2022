@@ -10,4 +10,7 @@ struct node
 	coord parent;
 };
 
-std::vector<coord> aStar(const map& m, const coord& start, const std::function<bool(const coord&)> is_finish, const std::function<std::vector<coord>(const map&,const coord&)> get_neighbors, const std::function<double(const coord&)> heuristic);
+std::vector<coord> aStar(const map& m, const coord& start,
+	const std::function<bool(const coord&)> is_finish,
+	const std::function<std::vector<coord>(const map&,const coord&)> get_neighbors,
+	const std::function<double(const coord&)> heuristic);
