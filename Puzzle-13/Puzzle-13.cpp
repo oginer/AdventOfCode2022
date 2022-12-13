@@ -31,22 +31,24 @@ t_input parse_input(std::istream&& input)
 	return parse_input(input);
 }
 
-std::variant<std::string, int> next_token(std::string& str, size_t &pos)
+std::variant<char, int> next_token(std::string& str, size_t &pos)
 {
-	std::variant<std::string, int> result{ "" };
+	std::variant<char, int> result{ '\0' };
 
 	if (pos < str.length())
 	{
 		if (str[pos] == ',') ++pos;
 		if (str[pos] == '[' || str[pos] == ']')
 		{
-			result = str.substr(pos, 1);
+			result = str[pos];
 			++pos;
 		}
 		else
 		{
-			size_t n;
-			result = std::stoi(str.substr(pos), &n);
+			std::string_view sv(str.begin() + pos, str.end());
+			int val;
+			auto n = std::from_chars(sv.data(), sv.data() + sv.size(), val).ptr - sv.data();
+			result = val;
 			pos += n;
 		}
 	}
@@ -78,17 +80,17 @@ bool compare_messages(std::string str1, std::string str2)
 			if (std::holds_alternative<int>(token1))
 			{
 				int n1 = std::get<int>(token1);
-				std::string s2 = std::get<std::string>(token2);
-				if (s2 == "]") return false;
+				char s2 = std::get<char>(token2);
+				if (s2 == ']') return false;
 //				// s2 == "["
 				str1.insert(p1, 1, ']');
 				p1 = prev_p1;
 			}
 			else
 			{
-				std::string s1 = std::get<std::string>(token1);
+				char s1 = std::get<char>(token1);
 				int n2 = std::get<int>(token2);
-				if (s1 == "]") return true;
+				if (s1 == ']') return true;
 				// s1 == "["
 				str2.insert(p2, 1, ']');
 				p2 = prev_p2;
@@ -96,13 +98,13 @@ bool compare_messages(std::string str1, std::string str2)
 		}
 		else
 		{
-			std::string s1 = std::get<std::string>(token1);
-			std::string s2 = std::get<std::string>(token2);
+			char s1 = std::get<char>(token1);
+			char s2 = std::get<char>(token2);
 
 			if (s1 != s2)
 			{
-				if (s1 == "]") return true;
-				if (s2 == "]") return false;
+				if (s1 == ']') return true;
+				if (s2 == ']') return false;
 			}
 		}
 
