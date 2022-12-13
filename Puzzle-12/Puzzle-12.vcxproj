@@ -131,7 +131,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="astar.cpp" />
     <ClCompile Include="Puzzle-12.cpp" />
   </ItemGroup>
   <ItemGroup>

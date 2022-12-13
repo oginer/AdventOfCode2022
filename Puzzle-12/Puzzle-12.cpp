@@ -12,11 +12,11 @@
 class heuristic_manhattan_distance
 {
 private:
-	const coord& m_finish;
+	const coord m_finish;
 
 public:
-	heuristic_manhattan_distance(const coord& f)
-		:m_finish(f)
+	heuristic_manhattan_distance(const coord& finish)
+		:m_finish(finish)
 	{}
 
 	unsigned operator() (const coord &pos) const
@@ -25,36 +25,22 @@ public:
 	}
 };
 
-class heuristic_zero
+constexpr unsigned heuristic_zero(const coord& pos)
 {
-public:
-	heuristic_zero()
-	{}
+	return 0;
+}
 
-	unsigned operator() (const coord &pos) const
-	{
-		return 0;
-	}
-};
-
-class heuristic_distance_to_left
+ constexpr unsigned heuristic_distance_to_left(const coord& pos)
 {
-public:
-	class heuristic_distance_to_left()
-	{}
-
-	unsigned operator() (const coord &pos) const
-	{
-		return pos.first;
-	}
-};
+	return pos.second;
+}
 
 
 std::vector<coord> get_neighbors_part1(const map& m, const coord& pos)
 {
 	std::vector<coord> result;
 
-	int x = pos.first, y = pos.second;
+	const auto [x, y] = pos;
 
 	if (x > 0 && m[x - 1][y] <= m[x][y] + 1) result.push_back({ x - 1, y });
 	if (y > 0 && m[x][y - 1] <= m[x][y] + 1) result.push_back({ x, y - 1 });
@@ -68,7 +54,7 @@ std::vector<coord> get_neighbors_part2(const map& m, const coord& pos)
 {
 	std::vector<coord> result;
 
-	int x = pos.first, y = pos.second;
+	const auto [x, y] = pos;
 
 	if (x > 0 && m[x - 1][y] >= m[x][y] - 1) result.push_back({ x - 1, y });
 	if (y > 0 && m[x][y - 1] >= m[x][y] - 1) result.push_back({ x, y - 1 });
@@ -98,16 +84,16 @@ public:
 class is_finish_part2
 {
 private:
-	map m;
+	map m_map;
 
 public:
 	is_finish_part2(const map& input)
-		:m(input)
+		:m_map(input)
 	{}
 
 	bool operator() (const coord& c) const
 	{
-		return m[c.first][c.second] == 'a';
+		return m_map[c.first][c.second] == 'a';
 	}
 };
 
@@ -153,18 +139,14 @@ t_input parse_input(std::istream&& input)
 
 void part1(const t_input& input)
 {
-	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_manhattan_distance{input.finish});
-
-	map  out = input.m;
+	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_manhattan_distance(input.finish));
 
 	std::cout << "Shortest path length: " << path.size() << std::endl;
 }
 
 void part2(const t_input& input)
 {
-	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_distance_to_left());
-
-	map  out = input.m;
+	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_distance_to_left);
 
 	std::cout << "Shortest path length backwards: " << path.size() << std::endl;
 }
