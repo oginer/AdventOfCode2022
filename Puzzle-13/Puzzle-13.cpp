@@ -4,8 +4,12 @@
 #include <string>
 #include <string_view>
 #include <variant>
+#include <algorithm>
 
-using t_input = std::vector<std::pair<std::string, std::string>>;
+#include "../utils/timer.h"
+
+
+using t_input = std::vector<std::string>;
 
 t_input parse_input(std::istream& input)
 {
@@ -15,15 +19,8 @@ t_input parse_input(std::istream& input)
 
 	while (std::getline(input, line))
 	{
-		std::pair<std::string, std::string> messages;
-
-		messages.first = line;
-		std::getline(input, line);
-		messages.second = line;
-
-		std::getline(input, line);
-
-		result.push_back(messages);
+		if (line != "")
+			result.push_back(line);
 	}
 
 	return result;
@@ -34,40 +31,34 @@ t_input parse_input(std::istream&& input)
 	return parse_input(input);
 }
 
-std::variant<std::string, int> next_token(std::string& sv, size_t &p)
+std::variant<std::string, int> next_token(std::string& str, size_t &pos)
 {
-	std::variant<std::string, int> result;
+	std::variant<std::string, int> result{ "" };
 
-	if (sv == "") return "";
-	if (sv[p] == ',') ++p;
-	if (sv[p] == '[' || sv[p] == ']')
+	if (pos < str.length())
 	{
-		result = std::string(sv.substr(p,1));
-		++p;
-		return result;
+		if (str[pos] == ',') ++pos;
+		if (str[pos] == '[' || str[pos] == ']')
+		{
+			result = str.substr(pos, 1);
+			++pos;
+		}
+		else
+		{
+			size_t n;
+			result = std::stoi(str.substr(pos), &n);
+			pos += n;
+		}
 	}
-	else
-	{
-		size_t n;
-		int number = std::stoi(sv.substr(p), &n);
-		p += n;
-		result = number;
-		return result;
-	}
+
+	return result;
 }
 
-bool compare_messages(const std::pair<std::string, std::string>& messages)
+bool compare_messages(std::string str1, std::string str2)
 {
-	bool result = false;
 	size_t p1=0, p2=0;
-	auto [str1, str2] = messages;
 
-	std::cout << "Comparing: ";
-	std::cout << str1 << std::endl;
-	std::cout << "           " << str2 << std::endl;
-
-
-	do
+	while (p1 < str1.length() && p2 < str2.length())
 	{
 		size_t prev_p1 = p1;
 		size_t prev_p2 = p2;
@@ -89,7 +80,7 @@ bool compare_messages(const std::pair<std::string, std::string>& messages)
 				int n1 = std::get<int>(token1);
 				std::string s2 = std::get<std::string>(token2);
 				if (s2 == "]") return false;
-				// s2 == "["
+//				// s2 == "["
 				str1.insert(p1, 1, ']');
 				p1 = prev_p1;
 			}
@@ -115,7 +106,7 @@ bool compare_messages(const std::pair<std::string, std::string>& messages)
 			}
 		}
 
-	} while (str1 != "" && str2 != "");
+	};
 
 	return true;
 }
@@ -124,23 +115,49 @@ void part1(const t_input& input)
 {
 	unsigned i = 0;
 	unsigned sum = 0;
+	auto it = input.begin();
 
-	for (const auto &messages : input)
+	while (it != input.end())
 	{
 		++i;
-		if (compare_messages(messages))
+		auto& str1 = *it;
+		++it;
+		auto& str2 = *it;
+		++it;
+		if (compare_messages(str1, str2))
 		{
-			std::cout << "Right order" << std::endl;
 			sum += i;
 		}
-		else std::cout << "Wrong order" << std::endl;
 	}
 	std::cout << "Sum of correct indexes: " << sum << std::endl;
 }
 
+void part2(t_input input)
+{
+	input.push_back("[[6]]");
+	input.push_back("[[2]]");
+
+	std::sort(input.begin(), input.end(), compare_messages);
+
+	auto item_2 = std::lower_bound(input.begin(), input.end(), "[[2]]", compare_messages) - input.begin();
+	auto item_6 = std::lower_bound(input.begin(), input.end(), "[[6]]", compare_messages) - input.begin();
+
+	std::cout << "Decoder key: " << item_2 * item_6 << std::endl;
+}
+
 int main()
 {
-	auto input = parse_input(std::ifstream("input.txt"));
+	Timer t("Total");
 
+	Timer tI("Input");
+	auto input = parse_input(std::ifstream("input.txt"));
+	tI.finish(false);
+
+	Timer t1;
 	part1(input);
+	t1.finish();
+
+	Timer t2;
+	part2(input);
+	t2.finish();
 }
