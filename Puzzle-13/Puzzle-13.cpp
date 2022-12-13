@@ -31,7 +31,7 @@ t_input parse_input(std::istream&& input)
 	return parse_input(input);
 }
 
-std::variant<char, int> next_token(std::string& str, size_t &pos)
+std::variant<char, int> next_token(const std::string& str, size_t &pos)
 {
 	std::variant<char, int> result{ '\0' };
 
@@ -56,17 +56,35 @@ std::variant<char, int> next_token(std::string& str, size_t &pos)
 	return result;
 }
 
-bool compare_messages(std::string str1, std::string str2)
+bool compare_messages(const std::string &str1, const std::string &str2)
 {
 	size_t p1=0, p2=0;
+	size_t ip1 = 0, ip2 = 0;   // positions where ']' need to be inserted by the tokenizer
+	unsigned cp1 = 0, cp2 = 0; // number of remaining ']' that need to be inserted at positions ip1, ip2
 
 	while (p1 < str1.length() && p2 < str2.length())
 	{
 		size_t prev_p1 = p1;
 		size_t prev_p2 = p2;
 
-		auto token1 = next_token(str1, p1);
-		auto token2 = next_token(str2, p2);
+		std::variant<char, int> token1;
+
+		std::variant<char, int> token2;
+
+
+		if (ip1 == p1 && cp1 > 0)
+		{
+			cp1--;
+			token1 = ']';
+		}
+		else token1 = next_token(str1, p1);
+
+		if (ip2 == p2 && cp2 > 0)
+		{
+			cp2--;
+			token2 = ']';
+		}
+		else token2 = next_token(str2, p2);
 
 		if (std::holds_alternative<int>(token1) && std::holds_alternative<int>(token2))
 		{
@@ -82,8 +100,10 @@ bool compare_messages(std::string str1, std::string str2)
 				int n1 = std::get<int>(token1);
 				char s2 = std::get<char>(token2);
 				if (s2 == ']') return false;
-//				// s2 == "["
-				str1.insert(p1, 1, ']');
+				// s2 == "["
+				// instruct the str1 tokenizer to generate ']' at position p1
+				ip1 = p1;
+				cp1++;
 				p1 = prev_p1;
 			}
 			else
@@ -92,7 +112,9 @@ bool compare_messages(std::string str1, std::string str2)
 				int n2 = std::get<int>(token2);
 				if (s1 == ']') return true;
 				// s1 == "["
-				str2.insert(p2, 1, ']');
+				// instruct the str2 tokenizer to generate ']' at position p2
+				ip2 = p2;
+				cp2++;
 				p2 = prev_p2;
 			}
 		}
@@ -115,22 +137,20 @@ bool compare_messages(std::string str1, std::string str2)
 
 void part1(const t_input& input)
 {
-	unsigned i = 0;
+	unsigned i = 1;
 	unsigned sum = 0;
 	auto it = input.begin();
 
 	while (it != input.end())
 	{
-		++i;
-		auto& str1 = *it;
-		++it;
-		auto& str2 = *it;
-		++it;
-		if (compare_messages(str1, str2))
+		if (compare_messages(*it, *(it+1)))
 		{
 			sum += i;
 		}
+		it += 2;
+		i++;
 	}
+
 	std::cout << "Sum of correct indexes: " << sum << std::endl;
 }
 
