@@ -22,16 +22,16 @@ public:
 		print = false;
 	}
 
-	void finish()
+	void finish(bool force_print = false)
 	{
 		if (started)
 		{
 			m_end = std::chrono::steady_clock::now();
-			if (name == "")
+			if (name == "" || force_print)
 			{
 				std::cout << std::endl;
-				std::cout << "Execution time: ";
-				std::cout << std::setprecision(2) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl << std::endl;
+				std::cout << name << ((name == "") ? "Execution time: " : " execution time: ");
+				std::cout << std::setprecision(3) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl << std::endl;
 				print = false;
 			}
 			else print = true;
@@ -63,7 +63,7 @@ public:
 		{
 			std::cout << std::endl;
 			std::cout << name << " execution time: ";
-			std::cout << std::setprecision(2) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl;
+			std::cout << std::setprecision(3) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl;
 		}
 	}
 };

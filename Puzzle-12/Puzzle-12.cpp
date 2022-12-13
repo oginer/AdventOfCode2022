@@ -19,7 +19,7 @@ public:
 		:m_finish(f)
 	{}
 
-	double operator() (const coord &pos) const
+	unsigned operator() (const coord &pos) const
 	{
 		return std::abs(pos.first - m_finish.first) + std::abs(pos.second - m_finish.second);
 	}
@@ -27,13 +27,11 @@ public:
 
 class heuristic_zero
 {
-private:
-
 public:
 	heuristic_zero()
 	{}
 
-	double operator() (const coord &pos) const
+	unsigned operator() (const coord &pos) const
 	{
 		return 0;
 	}
@@ -41,13 +39,11 @@ public:
 
 class heuristic_distance_to_left
 {
-private:
-
 public:
 	class heuristic_distance_to_left()
 	{}
 
-	double operator() (const coord &pos) const
+	unsigned operator() (const coord &pos) const
 	{
 		return pos.first;
 	}
@@ -158,7 +154,6 @@ t_input parse_input(std::istream&& input)
 void part1(const t_input& input)
 {
 	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_manhattan_distance{input.finish});
-//	auto path = aStar(input.m, input.start, is_finish_part1(input.finish), get_neighbors_part1, heuristic_zero{});
 
 	map  out = input.m;
 
@@ -167,7 +162,7 @@ void part1(const t_input& input)
 
 void part2(const t_input& input)
 {
-	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_distance_to_left{});
+	auto path = aStar(input.m, input.finish, is_finish_part2(input.m), get_neighbors_part2, heuristic_distance_to_left());
 
 	map  out = input.m;
 
@@ -180,7 +175,7 @@ int main()
 
 	Timer tInput("Input");
 	auto input = parse_input(std::ifstream("input.txt"));
-	tInput.finish();
+	tInput.finish(true);
 
 	std::cout << "start:  (" << input.start.first << ", " << input.start.second << ")" << std::endl;
 	std::cout << "finish: (" << input.finish.first << ", " << input.finish.second << ")" << std::endl << std::endl;

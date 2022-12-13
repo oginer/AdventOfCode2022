@@ -22,21 +22,21 @@ std::vector<coord> generate_path(const std::vector<std::vector<node>>& nodes, co
 std::vector<coord> aStar(const map& m, const coord& start,
 	const std::function<bool(const coord&)> is_finish,
 	const std::function<std::vector<coord>(const map&,const coord&)> get_neighbors,
-	const std::function<double(const coord&)> heuristic)
+	const std::function<unsigned(const coord&)> heuristic)
 {
-	std::priority_queue<std::pair<double, coord>, std::vector<std::pair<double, coord>>, std::greater<std::pair<double, coord>>> open_nodes;
+	std::priority_queue<std::pair<unsigned, coord>, std::vector<std::pair<unsigned, coord>>, std::greater<std::pair<unsigned, coord>>> open_nodes;
 	std::vector<std::vector<bool>> closed_nodes{ m.size(), std::vector<bool>(m[0].size(), false) };
 	std::vector<std::vector<node>> nodes(m.size(), std::vector<node>(m[0].size()));
 
-	open_nodes.emplace(0.0, start);
+	open_nodes.emplace(0, start);
 
-	nodes[start.first][start.second].f = 0.0;
-	nodes[start.first][start.second].g = 0.0;
+	nodes[start.first][start.second].f = 0;
+	nodes[start.first][start.second].g = 0;
 	nodes[start.first][start.second].parent = start;
 
 	while (!open_nodes.empty())
 	{
-		std::pair<double, coord> current = open_nodes.top();
+		std::pair<unsigned, coord> current = open_nodes.top();
 		coord current_coord = current.second;
 		open_nodes.pop();
 		closed_nodes[current_coord.first][current_coord.second] = true;
@@ -53,8 +53,8 @@ std::vector<coord> aStar(const map& m, const coord& start,
 			if (!closed_nodes[child.first][child.second])
 			{
 				node succesor;
-				succesor.g = nodes[current_coord.first][current_coord.second].g + 1.0;
-				double h = heuristic(child);
+				succesor.g = nodes[current_coord.first][current_coord.second].g + 1;
+				unsigned h = heuristic(child);
 				succesor.f = succesor.g + h;
 				succesor.parent = current_coord;
 
