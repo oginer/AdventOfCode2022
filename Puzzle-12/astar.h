@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <functional>
 #include <string>
 #include <queue>
 #include <type_traits>
@@ -51,7 +50,7 @@ std::vector<coord> aStar(const map& m, const coord& start,
 
 	while (!open_nodes.empty())
 	{
-		auto [cost ,current_coord] = open_nodes.top();
+		auto current_coord = open_nodes.top().second;
 		open_nodes.pop();
 		closed_nodes[current_coord.first][current_coord.second] = true;
 		auto childs = get_neighbors(m, current_coord);
@@ -75,7 +74,7 @@ std::vector<coord> aStar(const map& m, const coord& start,
 				if (nodes[cx][cy].f > succesor.f)
 				{
 					nodes[cx][cy] = succesor;
-					open_nodes.emplace(succesor.f, coord(cx, cy));
+					open_nodes.emplace(succesor.f, coord{ cx, cy });
 				}
 			}
 		}

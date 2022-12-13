@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <functional>
 
 #include "../utils/timer.h"
 
@@ -68,7 +67,7 @@ std::vector<coord> get_neighbors_part2(const map& m, const coord& pos)
 class is_finish_part1
 {
 private:
-	coord finish;
+	const coord finish;
 
 public:
 	is_finish_part1(const coord &c)
@@ -84,7 +83,7 @@ public:
 class is_finish_part2
 {
 private:
-	map m_map;
+	const map &m_map;
 
 public:
 	is_finish_part2(const map& input)
