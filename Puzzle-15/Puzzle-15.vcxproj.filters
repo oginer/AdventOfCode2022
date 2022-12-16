@@ -18,9 +18,17 @@
     <ClCompile Include="Puzzle-15.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="NORange.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
     <Text Include="example.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NORange.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
