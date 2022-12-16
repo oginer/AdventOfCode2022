@@ -26,11 +26,14 @@ std::vector<std::string> parse_command(const std::string& str)
 template <typename T>
 size_t parse_number(const std::string& str, T& value, size_t pos = 0)
 {
+	value = 0;
+	size_t result = 0;
+
 	auto [ptr, ec] = std::from_chars(str.data() + pos, str.data() + str.size(), value);
-	if (ec == std::errc())
+	if (ec == std::errc()) // no error
 	{
-		return ptr - (str.data() + pos);
+		result = ptr - (str.data() + pos);
 	}
 
-	return 0;
+	return result;
 }
