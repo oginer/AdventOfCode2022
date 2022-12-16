@@ -67,7 +67,7 @@ bool non_overlaping_ranges::is_inside(long x) const
 	auto it = ranges.upper_bound({ x,x });
 	if (it == ranges.begin()) return false;
 	--it;
-	return x >= it->start && x < it->end;
+	return x >= it->start && x <= it->end;
 }
 
 std::set<range>::iterator non_overlaping_ranges::begin()

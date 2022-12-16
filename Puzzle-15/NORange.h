@@ -6,11 +6,8 @@ struct range
 	long end = 0;
 
 	long size() const;
-
 	bool overlaps(const range& other) const;
-
 	void merge_with(const range& other);
-
 	bool operator < (const range& r) const;
 };
 
