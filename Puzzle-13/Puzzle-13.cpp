@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -151,7 +151,7 @@ void part1(const t_input& input)
 		i++;
 	}
 
-	std::cout << "Sum of correct indexes: " << sum << std::endl;
+	std::cout << std::format("Sum of correct indexex: {}\n", sum);
 }
 
 void part2(t_input input)

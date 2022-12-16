@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iomanip>
 #include <chrono>
@@ -13,6 +13,36 @@ private:
 	bool started{ false };
 	bool print{ false };
 	std::string name;
+
+	std::string format(auto t)
+	{
+		std::string result;
+		double val;
+
+		val = std::chrono::duration <double>(t).count();
+		if (val > 60)
+		{
+			unsigned ival = static_cast<unsigned>(val);
+			if (ival % 60 == 0 || val > 30 * 60)
+				result = std::format("{} m", ival / 60);
+			else
+				result = std::format("{} m, {} s", ival / 60, ival % 60);
+		}
+		else if (val > 1)
+			result = std::format("{:.1f} s", val);
+		else
+		{
+			val = std::chrono::duration <double, std::milli>(t).count();
+			if (val > 0.2) result = std::format("{:.3g} ms", val);
+			else
+			{
+				val = std::chrono::duration <double, std::micro>(t).count();
+				result = std::format("{:.3g} us", val);
+			}
+		}
+
+		return result;
+	}
 
 public:
 	void start()
@@ -31,7 +61,7 @@ public:
 			{
 				std::cout << std::endl;
 				std::cout << name << ((name == "") ? "Execution time: " : " execution time: ");
-				std::cout << std::setprecision(3) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl << std::endl;
+				std::cout << format(m_end - m_start) << std::endl << std::endl;
 				print = false;
 			}
 			else print = true;
@@ -63,7 +93,7 @@ public:
 		{
 			std::cout << std::endl;
 			std::cout << name << " execution time: ";
-			std::cout << std::setprecision(3) << std::chrono::duration <double, std::milli>(m_end - m_start).count() << " ms" << std::endl;
+			std::cout << format(m_end - m_start) << std::endl;
 		}
 	}
 };
