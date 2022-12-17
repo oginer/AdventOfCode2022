@@ -54,7 +54,6 @@ input_data parse_input(std::istream&& s)
 	return parse_input(s);
 }
 
-
 graph<std::string> build_graph(const std::vector<valve>& input)
 {
 	graph<std::string> result;
@@ -72,24 +71,16 @@ graph<std::string> build_graph(const std::vector<valve>& input)
 	return result;
 }
 
-template <typename T>
-using table = std::unordered_map<std::string, std::unordered_map<std::string, T>>;
-
-table<int> distance_table(const std::vector<valve>& input)
-{
-	table<int> result;
-
-	return result;
-}
-
 void part1(const input_data& input)
 {
-	auto graph = build_graph(input.valves);
+	auto g = build_graph(input.valves);
 
 	for (auto& v : input.valves)
 	{
-		if (v.flow_rate == 0 && v.name != input.start) graph.collapse_node(v.name);
+		if (v.flow_rate == 0 && v.name != input.start) g.collapse_node(v.name);
 	}
+
+	auto distances = g.shorter_distances_table();
 }
 
 int main()
@@ -97,7 +88,7 @@ int main()
 	Timer t("Total");
 
 	Timer ti("Input");
-	auto data = parse_input(std::ifstream("example.txt"));
+	auto data = parse_input(std::ifstream("input.txt"));
 	ti.finish(false);
 
 	Timer t1;
