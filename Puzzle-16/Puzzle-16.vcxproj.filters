@@ -18,16 +18,13 @@
     <ClCompile Include="Puzzle-16.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="Graph.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="example.txt" />
     <Text Include="input.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graph.h">
+    <ClInclude Include="graph.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

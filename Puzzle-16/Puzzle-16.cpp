@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Graph.h"
+#include "graph.h"
 
 #include "../utils/parse_helper.h"
 #include "../utils/timer.h"
@@ -55,9 +55,9 @@ input_data parse_input(std::istream&& s)
 }
 
 
-Graph build_graph(const std::vector<valve>& input)
+graph<std::string> build_graph(const std::vector<valve>& input)
 {
-	Graph result;
+	graph<std::string> result;
 
 	for (auto& v : input)
 	{
