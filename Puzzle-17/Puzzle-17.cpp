@@ -49,7 +49,6 @@ long long simulate(chamber& ch, jet_generator jet, unsigned long long qty, int p
 void part1(const std::string& input, long long qty)
 {
 	chamber ch(7);
-
 	jet_generator jet(input);
 
 	std::cout << "The tower is " << simulate(ch, jet, qty) << " units tall." << std::endl;
@@ -83,7 +82,6 @@ void part2(const std::string& input, unsigned long long qty)
 
 	std::unordered_map<state, std::pair<unsigned long long, unsigned long long>, state_hash> prev_states;
 	chamber ch(7);
-
 	jet_generator jet(input);
 
 	unsigned long long big_height = 0;
@@ -104,9 +102,9 @@ void part2(const std::string& input, unsigned long long qty)
 			std::cout << "Previous was at iteration " << previous_i << ", with height = " << previous_height << std::endl;
 			std::cout << "  piece: " << previous_state.piece_idx << ", jet: " << previous_state.jet_pos << std::endl;
 
-			unsigned long long cycle_size = i - previous_i;
-			unsigned long long height_delta = ch.height() - previous_height;
-			std::cout << std::endl << "Cycle: every " << cycle_size << " iterations, heigh increments by " << height_delta << std::endl;
+			const unsigned long long cycle_size = i - previous_i;
+			const unsigned long long height_delta = ch.height() - previous_height;
+			std::cout << std::endl << "Cycle: every " << cycle_size << " iterations, height increments by " << height_delta << " units." << std::endl;
 
 			big_height += previous_height;  // size of the beginning section
 			big_height += (qty - previous_i - 1) / cycle_size * height_delta;   // increment during the cicles;
