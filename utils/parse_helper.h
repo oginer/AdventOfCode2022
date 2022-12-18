@@ -8,11 +8,11 @@
 #include <system_error>
 
 
-std::vector<std::string> parse_command(const std::string& str)
+std::vector<std::string> parse_command(const std::string& str, const char separator = ' ')
 {
 	std::vector<std::string> result;
 
-	std::ranges::for_each(str | std::views::split(' '),
+	std::ranges::for_each(str | std::views::split(separator),
 		[&result](const auto& v)
 		{
 			std::string str = std::string(v.begin(), v.end());
