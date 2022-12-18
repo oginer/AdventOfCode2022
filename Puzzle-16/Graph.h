@@ -22,9 +22,8 @@ public:
 	void erase_node(const T& name);
 	void erase_edge(const T& from, const T& to);
 	void collapse_node(const T& name);
-	int edge_cost(const T& from, const T& to);
-
-	std::map<std::pair<T, T>, int> shorter_distances_table();
+	int edge_cost(const T& from, const T& to) const;
+	std::map<std::pair<T, T>, int> shorter_distances_table() const;
 };
 
 
@@ -84,7 +83,7 @@ void graph<T>::collapse_node(const T& name)
 }
 
 template<typename T>
-inline int graph<T>::edge_cost(const T& from, const T& to)
+int graph<T>::edge_cost(const T& from, const T& to) const
 {
 	if (from == to) return 0;
 	auto adj = nodes.at(from).adjacents;
@@ -94,7 +93,7 @@ inline int graph<T>::edge_cost(const T& from, const T& to)
 }
 
 template <typename T>
-std::map<std::pair<T, T>, int> graph<T>::shorter_distances_table()
+std::map<std::pair<T, T>, int> graph<T>::shorter_distances_table() const
 {
 	std::map<std::pair<T, T>, int> result;
 
@@ -125,8 +124,6 @@ std::map<std::pair<T, T>, int> graph<T>::shorter_distances_table()
 				if (result[{i, j}] > d)
 					result[{i, j}] = d;
 			}
-
-	return result;
 
 	return result;
 }
