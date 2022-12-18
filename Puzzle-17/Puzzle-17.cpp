@@ -36,9 +36,9 @@ const std::vector<shape> pieces{
 	}
 };
 
-long long simulate(chamber& ch, jet_generator jet, long long qty, int piece = 0)
+long long simulate(chamber& ch, jet_generator jet, unsigned long long qty, int piece = 0)
 {
-	for (long long i = piece; i < qty+piece; ++i)
+	for (unsigned long long i = piece; i < qty+piece; ++i)
 	{
 		ch.simulate_drop(pieces[i % pieces.size()], jet);
 	}
@@ -77,38 +77,43 @@ struct state_hash
 	}
 };
 
-void part2(const std::string& input, long long qty)
+void part2(const std::string& input, unsigned long long qty)
 {
-	constexpr int buffer_size = 1000;
+	constexpr int buffer_size = 20;
 
 	std::unordered_map<state, std::pair<unsigned long long, unsigned long long>, state_hash> prev_states;
 	chamber ch(7);
 
 	jet_generator jet(input);
 
-	long long big_height = 0;
+	unsigned long long big_height = 0;
 
 	for (unsigned long long i = 0; i < qty; ++i)
 	{
 		ch.simulate_drop(pieces[i % pieces.size()], jet);
+
 		state current{ i % pieces.size(), jet.pos(), ch.top_lines(buffer_size)};
 		auto it = prev_states.find(current);
-		if (it  != prev_states.end())
+		if (it != prev_states.end())
 		{
+			const auto& [previous_state, previous_data] = *it;
+			const auto& [previous_i, previous_height] = previous_data;
+
 			std::cout << "Repeated state at iteration " << i << ", with height = " << ch.height() << std::endl;
 			std::cout << "  piece: " << current.piece_idx << ", jet: " << current.jet_pos << std::endl;
-			std::cout << "Previous was at iteration " << it->second.first << ", with height = " << it->second.second << std::endl;
-			std::cout << "  piece: " << it->first.piece_idx << ", jet: " << it->first.jet_pos << std::endl;
+			std::cout << "Previous was at iteration " << previous_i << ", with height = " << previous_height << std::endl;
+			std::cout << "  piece: " << previous_state.piece_idx << ", jet: " << previous_state.jet_pos << std::endl;
 
-			unsigned long cycle_size = i - it->second.first;
-			unsigned long height_delta = ch.height() - it->second.second;
+			unsigned long long cycle_size = i - previous_i;
+			unsigned long long height_delta = ch.height() - previous_height;
 			std::cout << std::endl << "Cycle: every " << cycle_size << " iterations, heigh increments by " << height_delta << std::endl;
 
-			big_height += it->second.second;  // size of the beginning section
-			big_height += (qty - it->second.first-1) / cycle_size * height_delta;   // increment during the cicles;
+			big_height += previous_height;  // size of the beginning section
+			big_height += (qty - previous_i - 1) / cycle_size * height_delta;   // increment during the cicles;
 
 			auto prev_height = ch.height();
-			big_height += simulate(ch, jet, (qty - it->second.first-1) % cycle_size, (it->first.piece_idx+1) % pieces.size()) - prev_height;
+			// heigh of the end, uncompleted cycle
+			big_height += simulate(ch, jet, (qty - previous_i - 1) % cycle_size, (previous_state.piece_idx + 1) % pieces.size()) - prev_height;
 
 			break;
 		}
@@ -118,7 +123,7 @@ void part2(const std::string& input, long long qty)
 		}
 	}
 
-	std::cout << "The tower is " << big_height << " units tall." << std::endl;
+	std::cout << std::endl << "The tower is " << big_height << " units tall." << std::endl;
 }
 
 int main()
