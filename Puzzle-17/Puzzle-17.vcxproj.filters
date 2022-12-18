@@ -18,9 +18,17 @@
     <ClCompile Include="Puzzle-17.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="chamber.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
     <Text Include="example.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="chamber.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
