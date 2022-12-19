@@ -50,7 +50,7 @@ long simulate(const blueprint& bp, int time = 24)
 		int n = time-cstate.minute+cstate.geo_robot;
 		int m = cstate.geo_robot;
 		int max_posible = (n * n - m * m + n + m) / 2;
-		if (cstate.minute <= time && max_posible + cstate.geo + cstate.geo_robot >= best_geo)
+		if (cstate.minute <= time && max_posible + cstate.geo > best_geo)
 		{
 			cstate.ore += cstate.ore_robot;
 			cstate.clay += cstate.clay_robot;
@@ -76,12 +76,11 @@ long simulate(const blueprint& bp, int time = 24)
 			else
 			{
 				open_states.push(cstate);
-				if (cstate.ore >= bp.obsidiant_cost_ore && cstate.clay >= bp.obsidiant_cost_clay && cstate.obs_robot <= bp.geode_cost_obsidian)
+				if (cstate.ore >= bp.clay_cost && cstate.clay_robot <= bp.obsidiant_cost_clay)
 				{
 					auto cnext = cstate;
-					cnext.ore -= bp.obsidiant_cost_ore;
-					cnext.clay -= bp.obsidiant_cost_clay;
-					cnext.obs_robot_fab = 1;
+					cnext.ore -= bp.clay_cost;
+					cnext.clay_robot_fab = 1;
 					open_states.push(cnext);
 				}
 				if (cstate.ore >= bp.ore_cost && cstate.ore_robot <= std::max(bp.obsidiant_cost_ore, bp.geode_cost_ore))
@@ -91,11 +90,12 @@ long simulate(const blueprint& bp, int time = 24)
 					cnext.ore_robot_fab = 1;
 					open_states.push(cnext);
 				}
-				if (cstate.ore >= bp.clay_cost && cstate.clay_robot <= bp.obsidiant_cost_clay)
+				if (cstate.ore >= bp.obsidiant_cost_ore && cstate.clay >= bp.obsidiant_cost_clay && cstate.obs_robot <= bp.geode_cost_obsidian)
 				{
 					auto cnext = cstate;
-					cnext.ore -= bp.clay_cost;
-					cnext.clay_robot_fab = 1;
+					cnext.ore -= bp.obsidiant_cost_ore;
+					cnext.clay -= bp.obsidiant_cost_clay;
+					cnext.obs_robot_fab = 1;
 					open_states.push(cnext);
 				}
 			}
@@ -111,9 +111,6 @@ long simulate(const blueprint& bp, int time = 24)
 
 void part1(const std::vector<blueprint>& bps)
 {
-	struct state current_state;
-	current_state.ore_robot = 1;
-
 	long value = 0;
 	int i = 1;
 	for (auto& bp : bps)
@@ -127,18 +124,11 @@ void part1(const std::vector<blueprint>& bps)
 
 void part2(const std::vector<blueprint>& bps)
 {
-	struct state current_state;
-	current_state.ore_robot = 1;
-
 	long value = 1;
-
-	int i = 0;
-	for (auto& bp : bps)
+	for (const auto& bp : bps | std::views::take(3))
 	{
-		if (i == 3) break;
 		long geo = simulate(bp, 32);
 		value *= geo;
-		++i;
 	}
 
 	std::cout << "Multiplication of maximum geodes: " << value << std::endl;
