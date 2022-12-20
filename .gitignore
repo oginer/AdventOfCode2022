@@ -360,6 +360,7 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
+<<<<<<< HEAD
 FodyWeavers.xsd
 /Puzzle-19/input.txt
 /Puzzle-19/example.txt
@@ -390,3 +391,8 @@ FodyWeavers.xsd
 /Puzzle-03-1/input.txt
 /Puzzle-02-1/input.txt
 /Puzzle-01-1/input.txt
+/Puzzle-20/example.txt
+/Puzzle-20/input.txt
+=======
+FodyWeavers.xsd
+>>>>>>> parent of 6d992c1 (deleted inpyt files)
