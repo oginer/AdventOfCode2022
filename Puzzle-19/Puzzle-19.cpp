@@ -7,6 +7,7 @@
 #include "../utils/parse_helper.h"
 #include "../utils/timer.h"
 
+
 struct blueprint
 {
 	long ore_cost;
