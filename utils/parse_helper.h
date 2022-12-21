@@ -38,9 +38,9 @@ size_t parse_number(const std::string& str, T& value, size_t pos = 0)
 	return result;
 }
 
-long to_number(const std::string& str, size_t pos = 0)
+long long to_number(const std::string& str, size_t pos = 0)
 {
-	long result = 0;
+	long long result = 0;
 
 	std::from_chars(str.data() + pos, str.data() + str.size(), result);
 
