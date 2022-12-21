@@ -10,15 +10,6 @@
 
 using numbers = std::list<long long>;
 
-void print(const numbers& input)
-{
-	for (auto n : input)
-	{
-		std::cout << n << " ";
-	}
-	std::cout << std::endl;
-}
-
 numbers parse_input(std::ifstream& input)
 {
 	numbers result;
@@ -79,40 +70,8 @@ void move_element(numbers& input, numbers::iterator& it, int times = 1)
 	input.splice(it_dest, input, it);
 }
 
-void part1(numbers number_list)
+long long mix(numbers number_list, long long multiplier = 1, unsigned times = 1)
 {
-	std::vector<numbers::iterator> index;
-	numbers::iterator it_zero;
-	index.reserve(number_list.size());
-
-	for (auto it = number_list.begin(); it!= number_list.end(); ++it)
-	{
-		if (*it == 0) it_zero = it;
-		index.push_back(it);
-	}
-
-//	print(number_list);
-	for (auto i: index)
-	{
-		move_element(number_list, i);
-//		print(number_list);
-	}
-
-	long long result = 0;
-	auto it = it_zero;
-	it = next_rot(number_list, it_zero, 1000 % (number_list.size()));
-	result += *it;
-	it = next_rot(number_list, it, 1000 % (number_list.size()));
-	result += *it;
-	it = next_rot(number_list, it, 1000 % (number_list.size()));
-	result += *it;
-
-	std::cout << "Decription key: " << result << std::endl;
-}
-
-void part2(numbers number_list)
-{
-	constexpr long long decrypt_key = 811589153;
 
 	std::vector<numbers::iterator> index;
 	numbers::iterator it_zero;
@@ -121,30 +80,43 @@ void part2(numbers number_list)
 	for (auto it = number_list.begin(); it != number_list.end(); ++it)
 	{
 		if (*it == 0) it_zero = it;
-		*it *= decrypt_key;
+		*it *= multiplier;
 		index.push_back(it);
 	}
 
-//	print(number_list);
-	for (auto rep = 10; rep > 0; --rep)
+	for (auto rep = times; rep > 0; --rep)
 	{
-		for (auto i : index)
+		for (auto& i : index)
 		{
 			move_element(number_list, i);
 		}
-//		print(number_list);
 	}
 
 	long long result = 0;
 	auto it = it_zero;
-	it = next_rot(number_list, it_zero, 1000 % (number_list.size()));
-	result += *it;
-	it = next_rot(number_list, it, 1000 % (number_list.size()));
-	result += *it;
-	it = next_rot(number_list, it, 1000 % (number_list.size()));
-	result += *it;
+	for (auto i = 3; i > 0; --i)
+	{
+		it = next_rot(number_list, it, 1000 % (number_list.size()));
+		result += *it;
+	}
 
-	std::cout << "Decription key: " << result << std::endl;
+	return result;
+}
+
+void part1(const numbers &number_list)
+{
+	auto result = mix(number_list);
+
+	std::cout << "Sum of grove coordinates: " << result << std::endl;
+}
+
+void part2(const numbers &number_list)
+{
+	constexpr long long decrypt_key = 811589153;
+
+	auto result = mix(number_list, decrypt_key, 10);
+
+	std::cout << "Sum of grove coordinates with decryption key: " << result << std::endl;
 }
 
 int main()
