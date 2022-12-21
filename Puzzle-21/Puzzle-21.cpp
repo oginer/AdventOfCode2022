@@ -55,7 +55,7 @@ long long calculate(const t_input& input, std::string name)
 	auto number_it = input.numbers.find(name);
 	if (number_it != input.numbers.end())
 	{
-		return input.numbers.at(name);
+		return number_it->second;
 	}
 	else
 	{
@@ -114,6 +114,8 @@ long long what_value(const t_input& input, const std::string& name, const std::s
 				else return operand / wanted_result;
 			}
 		}
+
+		assert(true);
 	}
 }
 
